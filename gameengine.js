@@ -67,7 +67,7 @@ GameEngine.prototype.startInput = function () {
 
         var i = Math.floor(a/100) + 1;
         var j = Math.floor(b/100);
-        
+
         return {x: i, y: j}
     }
 
@@ -179,12 +179,3 @@ Entity.prototype.rotateAndCache = function (image, angle) {
     //offscreenCtx.strokeRect(0,0,size,size);
     return offscreenCanvas;
 }
-
-var collide = function (rect1, rect2) {
-    // return (rect1.paceWalk && (rect1.x < rect2.x + rect2.walkWidth && rect1.x + rect1.walkWidth > rect2.x 
-    // && rect1.y < rect2.y + rect2.walkHeight && rect1.walkHeight + rect1.y > rect2.y))
-    // || (!rect1.paceWalk && (rect1.x < rect2.x + rect2.runWidth && rect1.x + rect1.runWidth > rect2.x 
-    //     && rect1.y < rect2.y + rect2.runHeight && rect1.runHeight + rect1.y > rect2.y));
-    return (rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x 
-        && rect1.y < rect2.y + rect2.height && rect1.height + rect1.y > rect2.y);
-};
