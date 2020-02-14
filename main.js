@@ -117,7 +117,11 @@ function expandToOccupiedNeighbors(civ, neighbors, power) {
 	if (occupiedNeighbors.length > 0) {
 		var xy = occupiedNeighbors[Math.floor(Math.random() * occupiedNeighbors.length)];
 		GAMEBOARD[xy.x][xy.y].occupied = true;
+		if (GAMEBOARD[xy.x][xy.y].main) {
+			GAMEBOARD[xy.x][xy.y].civ.color = civ.color;
+		}
 		GAMEBOARD[xy.x][xy.y].civ = civ;
+
 	}
 
 	var i = 0;
@@ -129,6 +133,9 @@ function expandToOccupiedNeighbors(civ, neighbors, power) {
 		occupiedNeighbors.splice(occupiedNeighbors.indexOf(xy), 1);
 		xy = occupiedNeighbors[Math.floor(Math.random() * occupiedNeighbors.length)];
 		GAMEBOARD[xy.x][xy.y].occupied = true;
+		if (GAMEBOARD[xy.x][xy.y].main) {
+			GAMEBOARD[xy.x][xy.y].civ.color = civ.color;
+		}
 		GAMEBOARD[xy.x][xy.y].civ = civ;
 		i++
 	}
@@ -158,6 +165,7 @@ function expandToUnoccupiedNeighbors(civ, neighbors, power) {
 
 		var i = 0;
 		var lim = Math.floor(Math.sqrt(Math.sqrt(Math.sqrt(power)))) - 1;
+		// var lim = power - 1;
 		if (lim > unoccupiedNeighbors.length - 1) {
 			lim = unoccupiedNeighbors.length - 1
 		}
