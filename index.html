@@ -10,7 +10,7 @@
     <script type="text/javascript" src="./main.js"></script>
 </head>
 <body>
-	<p>Expand to a black tile if you can. If you can't, expand to other colors. Can expand floor(sqrt(sqrt(sqrt(n)))) tiles where n is power. Power is calculated with the sum from the starting tile to all the colored tiles that are your color if they are a neighbor. Neighbor is any adjacent tile.</p>
+	<p>Expand to a black tile if it is one of the neighbor tile of your color. Neighbor tile is a different color adjacent tile from your colored border. If you can't, expand to other colors. Can expand floor(sqrt(sqrt(sqrt(n)))) tiles where n is power. Power is calculated with the sum from the starting tile to all the colored tiles that are your color. </p>
     <canvas id="gameWorld" tabindex="1" width="1300" height="600" style="border: 1px solid brown; background: black"></canvas>
 </body>
 </html>
