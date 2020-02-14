@@ -79,8 +79,8 @@ function getPower(civ) {
 		  var node = queue.shift();
 
 		  power++;
-
-		  if (GAMEBOARD[node.x][node.y].civ == civ) {
+// 		  if (GAMEBOARD[node.x][node.y].civ && GAMEBOARD[node.x][node.y].civ.color == civ.color) {
+		  if (GAMEBOARD[node.x][node.y].civ && GAMEBOARD[node.x][node.y].civ.color == civ.color) {
 			  if (node.x + 1 < GAMEBOARD.length && !GAMEBOARD[node.x + 1][node.y].seen) {
 				  GAMEBOARD[node.x + 1][node.y].seen = true;
 				  var newNode = Object.assign({}, node);
@@ -125,18 +125,22 @@ function expandToOccupiedNeighbors(civ, neighbors, power) {
 	}
 
 	var i = 0;
-	var lim = Math.floor(Math.sqrt(Math.sqrt(Math.sqrt(power)))) - 1;
+	var lim = Math.floor(Math.sqrt(Math.sqrt(power))) - 1;
+	// var lim = Math.floor(Math.sqrt(Math.sqrt(Math.sqrt(power)))) - 1;
 	if (lim > occupiedNeighbors.length - 1) {
 		lim = occupiedNeighbors.length - 1
 	}
 	while (lim != i) {
 		occupiedNeighbors.splice(occupiedNeighbors.indexOf(xy), 1);
 		xy = occupiedNeighbors[Math.floor(Math.random() * occupiedNeighbors.length)];
-		GAMEBOARD[xy.x][xy.y].occupied = true;
-		if (GAMEBOARD[xy.x][xy.y].main) {
-			GAMEBOARD[xy.x][xy.y].civ.color = civ.color;
+		if (xy) {
+			GAMEBOARD[xy.x][xy.y].occupied = true;
+			if (GAMEBOARD[xy.x][xy.y].main) {
+				GAMEBOARD[xy.x][xy.y].civ.color = civ.color;
+			}
+			GAMEBOARD[xy.x][xy.y].civ = civ;
+			break;
 		}
-		GAMEBOARD[xy.x][xy.y].civ = civ;
 		i++
 	}
 }
@@ -164,8 +168,8 @@ function expandToUnoccupiedNeighbors(civ, neighbors, power) {
 		GAMEBOARD[xy.x][xy.y].civ = civ;
 
 		var i = 0;
-		var lim = Math.floor(Math.sqrt(Math.sqrt(Math.sqrt(power)))) - 1;
-		// var lim = power - 1;
+		// var lim = Math.floor(Math.sqrt(Math.sqrt(Math.sqrt(power)))) - 1;
+		var lim = Math.floor(Math.sqrt(Math.sqrt(power))) - 1;
 		if (lim > unoccupiedNeighbors.length - 1) {
 			lim = unoccupiedNeighbors.length - 1
 		}
@@ -390,10 +394,12 @@ function getNeighbors(civ) {
       for (let i = 0; i < queue.length; i++) {
           var node = queue.shift();
 
+// if (!GAMEBOARD[node.x][node.y].civ || GAMEBOARD[node.x][node.y].civ.color != civ.color) {
           if (GAMEBOARD[node.x][node.y].civ != civ) {
 			  neighbors.push(node);
           }
 
+// if (GAMEBOARD[node.x][node.y].civ && GAMEBOARD[node.x][node.y].civ.color == civ.color) {
 		  if (GAMEBOARD[node.x][node.y].civ == civ) {
 	          if (node.x + 1 < GAMEBOARD.length && !GAMEBOARD[node.x + 1][node.y].seen) {
 				  GAMEBOARD[node.x + 1][node.y].seen = true;
