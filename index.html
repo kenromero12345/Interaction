@@ -10,7 +10,7 @@
     <script type="text/javascript" src="./main.js"></script>
 </head>
 <body>
-	<p>A color will expand to a black/null tile if it is an adjacent tile to our colored tile. If it can't, it will expand to other colors (other than its color). It can expand multiple times in a turn depending on the size of the color. There is a specific case where a color can't expand to a black/null tile even though it is adjacent to its color. This is when another color expanded to it which makes the colors separated by another color. The separated color from the starting position can't expand anymore. It is also possible that the color would lose some of the times it can expand.</p>
+	<p>A color or group of same colors will expand to a random black/null tile if it is an adjacent tile to our colored tile/s. If it can't do this, it will expand to adjacent different colors randomly (other than its color). It can expand multiple times in a turn depending on the number of the colors(or size of the colored tiles). </p>
     <canvas id="gameWorld" tabindex="1" width="1300" height="600" style="border: 1px solid brown; background: black"></canvas>
 </body>
 </html>
