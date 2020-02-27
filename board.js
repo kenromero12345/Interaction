@@ -2,6 +2,7 @@ var GAMEBOARD = [];
 
 function board(game) {
 	GAMEBOARD = [];
+	this.name = "board";
 	this.width = 130;
 	this.height = 60;
 	this.xgap = 10;
@@ -21,8 +22,9 @@ board.prototype.buildGameboard = function () {
       GAMEBOARD[i].push({
     occupied : false,
 	main : false,
-	civ: null,
-	life: 0
+	civ: null
+	// ,
+	// life: 0
       });
     }
   }

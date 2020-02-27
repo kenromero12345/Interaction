@@ -1,34 +1,17 @@
 var AM = new AssetManager();
-
 AM.queueDownload("./img/RobotUnicorn.png");
-
-AM.downloadAll(function () {
-    var canvas = document.getElementById("gameWorld");
-    var ctx = canvas.getContext("2d");
-    var gameEngine = new GameEngine();
-    gameEngine.init(ctx);
-    gameEngine.start();
-
-    gameEngine.addEntity(new board(gameEngine));
-	gameEngine.addEntity(new civ(gameEngine, "red"));
-	gameEngine.addEntity(new civ(gameEngine, "blue"));
-	gameEngine.addEntity(new civ(gameEngine, "yellow"));
-	gameEngine.addEntity(new civ(gameEngine, "green"));
-	gameEngine.addEntity(new civ(gameEngine, "white"));
-	gameEngine.addEntity(new civ(gameEngine, "violet"));
-	gameEngine.addEntity(new civ(gameEngine, "orange"));
-
-    console.log("All Done!");
-});
+var GAMEENGINE;
 
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
  }
 
 function civ(game, color) {
+	this.name = "civ";
  	this.game = game;
  	this.ctx = game.ctx;
 	this.color = color;
+	this.startColor = color;
 	this.x = Math.floor(Math.random() * GAMEBOARD.length);
 	this.y = Math.floor(Math.random() * GAMEBOARD[0].length);
 	GAMEBOARD[this.x][this.y].occupied = true;
@@ -467,3 +450,97 @@ function getNeighbors(civ) {
 
   return neighbors;
 };
+
+AM.downloadAll(function () {
+	var socket = io.connect("http://24.16.255.56:8888");
+
+	socket.on("load", function (data) {
+		//TODO replace our entities
+		console.log(data);
+		GAMEENGINE.entities = [];
+		var obj = data.data;
+		GAMEENGINE.addEntity(new board(GAMEENGINE));
+		for (var i = 0; i < obj.civs.length; i++) {
+			var newCiv = new civ(GAMEENGINE, obj.civs[i].startColor, true);
+			newCiv.color = obj.civs[i].color;
+			newCiv.x = obj.civs[i].x;
+			newCiv.y = obj.civs[i].y;
+			GAMEENGINE.addEntity(newCiv);
+		}
+		console.log(obj.gameBoard);
+		for (var i = 0; i < obj.gameBoard.length; i++) {
+			for (var j = 0; j < obj.gameBoard[i].length; j++) {
+				GAMEBOARD[i][j].occupied = obj.gameBoard[i][j].occupied;
+				GAMEBOARD[i][j].main = obj.gameBoard[i][j].main;
+				GAMEBOARD[i][j].civ = null;
+				for (var k = 0; k < GAMEENGINE.entities.length; k++) {
+					if (GAMEENGINE.entities[k].name != "board"
+						&& obj.gameBoard[i][j].civStartColor
+						&& obj.gameBoard[i][j].civStartColor == GAMEENGINE.entities[k].startColor) {
+						GAMEBOARD[i][j].civ = GAMEENGINE.entities[k];
+						break;
+					}
+				}
+
+			}
+		}
+	});
+
+	var text = document.getElementById("text");
+	var saveButton = document.getElementById("save");
+	var loadButton = document.getElementById("load");
+
+	saveButton.onclick = function () {
+		//TODO send data to be saved
+		var gameData = {gameBoard: []}
+		for (var i = 0; i < GAMEBOARD.length; i++) {
+			gameData.gameBoard[i] = [];
+			for (var j = 0; j < GAMEBOARD[i].length; j++) {
+				gameData.gameBoard[i][j] = {};
+				gameData.gameBoard[i][j].occupied = GAMEBOARD[i][j].occupied;
+				gameData.gameBoard[i][j].main = GAMEBOARD[i][j].main;
+				gameData.gameBoard[i][j].civStartColor = null;
+				if (GAMEBOARD[i][j].civ) {
+					gameData.gameBoard[i][j].civStartColor = GAMEBOARD[i][j].civ.startColor;
+				}
+			}
+		}
+		gameData.civs = [];
+		for (var i = 0; i < GAMEENGINE.entities.length; i++) {
+			if (GAMEENGINE.entities[i].name != "board") {
+				var civ = {};
+				civ.color = GAMEENGINE.entities[i].color;
+				civ.startColor = GAMEENGINE.entities[i].startColor;
+				civ.x = GAMEENGINE.entities[i].x;
+				civ.y = GAMEENGINE.entities[i].y;
+				gameData.civs.push(civ);
+			}
+		}
+	  	console.log("save");
+	  	text.innerHTML = "Saved."
+	  	socket.emit("save", { studentname: "Ken Romero", statename: "theState", data: gameData });
+	};
+
+	loadButton.onclick = function () {
+	  	console.log("load");
+	  	text.innerHTML = "Loaded."
+	  	socket.emit("load", { studentname: "Ken Romero", statename: "theState" });
+	};
+
+    var canvas = document.getElementById("gameWorld");
+    var ctx = canvas.getContext("2d");
+    var gameEngine = new GameEngine();
+    gameEngine.init(ctx);
+    gameEngine.start();
+
+    gameEngine.addEntity(new board(gameEngine));
+	gameEngine.addEntity(new civ(gameEngine, "red"));
+	gameEngine.addEntity(new civ(gameEngine, "blue"));
+	gameEngine.addEntity(new civ(gameEngine, "yellow"));
+	gameEngine.addEntity(new civ(gameEngine, "green"));
+	gameEngine.addEntity(new civ(gameEngine, "white"));
+	gameEngine.addEntity(new civ(gameEngine, "violet"));
+	gameEngine.addEntity(new civ(gameEngine, "orange"));
+	GAMEENGINE = gameEngine;
+    console.log("All Done!");
+});

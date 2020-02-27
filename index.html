@@ -4,12 +4,16 @@
 <head>
     <meta charset="utf-8">
     <title>Civ</title>
+	<script type="text/javascript" src="http://24.16.255.56:8888/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="./board.js"></script>
     <script type="text/javascript" src="./gameengine.js"></script>
     <script type="text/javascript" src="./assetmanager.js"></script>
     <script type="text/javascript" src="./main.js"></script>
 </head>
 <body>
+	<div id = "text"></div>
+	<button id="save" type="button">Save</button>
+	<button id="load" type="button">Load</button>
 	<p>A color or group of same colors will expand to a random black/null tile if it is an adjacent tile to our colored tile/s. If it can't do this, it will expand to adjacent different colors randomly (other than its color). It can expand multiple times in a turn depending on the number of the colors(or size of the colored tiles). </p>
     <canvas id="gameWorld" tabindex="1" width="1300" height="600" style="border: 1px solid brown; background: black"></canvas>
 </body>
